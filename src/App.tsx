@@ -1,21 +1,47 @@
-import { useState } from "react";
+import { useReducer, useRef } from "react";
 
-import "./App.css";
+const reducer = (
+  state: { inputRef: number; showText: any },
+  action: { type: any }
+) => {
+  switch (action.type) {
+    case "toggleShowText":
+      return { inputRef: state.inputRef, showText: state.showText };
+    default:
+      return state;
+  }
+};
 
 function App() {
-  const [count, setCount] = useState(0);
+  const inputRef = useRef(0);
+  inputRef.current.focus();
+
+  const [state, dispatch] = useReducer(reducer, {
+    inputRef: 0,
+    showText: "null",
+  });
 
   return (
-    <div className="App">
-      <div>
-        <div className="card">
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
-          </button>
-        </div>
-      </div>
-    </div>
+    <>
+      <h1>Please enter number here !! </h1>
+      <input type="number" placeholder="Ex....1.2.3 " ref={inputRef}></input>
+      <button
+        onClick={() => {
+          dispatch({ type: "toggleShowText" });
+        }}
+      >
+        Identify{" "}
+      </button>
+      {state.showText && state.inputRef % 2 === 0 ? (
+        <p>
+          <span>{inputRef.current.value}</span> is a even number
+        </p>
+      ) : (
+        <p>
+          <span>{inputRef.current.value}</span> is an odd number
+        </p>
+      )}
+    </>
   );
 }
-
 export default App;
